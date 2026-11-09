@@ -1,0 +1,187 @@
+HTML
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>今日運勢簽</title>
+    <style>
+        :root {
+            --primary-red: #D32F2F;
+            --light-bg: #FFF9F9;
+            --border-gold: #FBC02D;
+            --text-dark: #333;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #F4F4F4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            color: var(--text-dark);
+        }
+
+        .container {
+            background-color: #FFFFFF;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+            border-top: 8px solid var(--primary-red);
+            box-sizing: border-box;
+        }
+
+        h1 {
+            color: var(--primary-red);
+            margin-top: 0;
+            margin-bottom: 20px;
+            font-size: 26px;
+            letter-spacing: 2px;
+        }
+
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            resize: vertical;
+            box-sizing: border-box;
+            line-height: 1.6;
+            margin-bottom: 20px;
+            background-color: var(--light-bg);
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: var(--primary-red);
+            box-shadow: 0 0 5px rgba(211, 47, 47, 0.2);
+        }
+
+        button {
+            background-color: var(--primary-red);
+            color: white;
+            border: none;
+            padding: 14px 24px;
+            font-size: 18px;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+            transition: background-color 0.2s;
+            font-weight: bold;
+            letter-spacing: 1px;
+            margin-bottom: 20px;
+        }
+
+        button:hover {
+            background-color: #B71C1C;
+        }
+
+        button:active {
+            transform: scale(0.98);
+        }
+
+        .result-box {
+            background-color: var(--light-bg);
+            border: 2px dashed var(--border-gold);
+            border-radius: 8px;
+            padding: 20px;
+            min-height: 60px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+
+        .result-title {
+            font-size: 32px;
+            font-weight: bold;
+            color: var(--primary-red);
+            margin: 0;
+        }
+
+        .result-message {
+            margin-top: 10px;
+            font-size: 15px;
+            color: #555;
+            line-height: 1.4;
+        }
+
+        .error {
+            color: #D32F2F;
+            font-size: 16px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>今日運勢簽</h1>
+        <textarea id="optionsInput" rows="5" placeholder="請輸入選項，每行一個">大吉
+中吉
+小吉
+吉</textarea>
+        <button id="drawBtn">幫我選</button>
+        <div id="resultArea" class="result-box">
+            <div style="color: #888;">等待抽取...</div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('drawBtn').addEventListener('click', function() {
+            const input = document.getElementById('optionsInput').value;
+            const resultArea = document.getElementById('resultArea');
+            
+            // 1. 分割字串、去空白、過濾空行
+            let options = input.split('\n').map(opt => opt.trim()).filter(opt => opt !== '');
+
+            // 2. 去除完全相同的重複選項
+            options = [...new Set(options)];
+
+            // 3. 檢查清單是否為空
+            if (options.length === 0) {
+                resultArea.innerHTML = '<span class="error">請先輸入至少一個選項</span>';
+                return;
+            }
+
+            // 4. 隨機抽取 (機率均等)
+            const randomIndex = Math.floor(Math.random() * options.length);
+            const selectedOption = options[randomIndex];
+
+            // 5. 判斷專屬跳出訊息
+            let specialMessage = '';
+            if (selectedOption === '大吉') {
+                specialMessage = '大吉大利，今晚吃雞！';
+            } else if (selectedOption === '中吉') {
+                specialMessage = '好運正蓄勢待發，一切都在朝著更好的方向前進';
+            } else if (selectedOption === '小吉') {
+                specialMessage = '心懷感恩，所見皆是溫柔；心存小吉，所到之處皆有福氣';
+            } else if (selectedOption === '吉') {
+                specialMessage = '凡事都正面，能量永不滅！';
+            }
+
+            // 更新結果區塊的畫面
+            if (specialMessage) {
+                resultArea.innerHTML = `
+                    <div class="result-title">${selectedOption}</div>
+                    <div class="result-message">${specialMessage}</div>
+                `;
+                // 使用 setTimeout 確保畫面先渲染完成，再觸發瀏覽器的跳出視窗
+                setTimeout(() => {
+                    alert(specialMessage);
+                }, 100);
+            } else {
+                resultArea.innerHTML = `<div class="result-title">${selectedOption}</div>`;
+            }
+        });
+    </script>
+
+</body>
+</html>
